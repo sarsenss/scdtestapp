@@ -1,5 +1,3 @@
-import sys
-import os
 import torch
 from telebot import TeleBot
 from telebot.types import Message
