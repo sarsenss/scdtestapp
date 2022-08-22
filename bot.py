@@ -22,12 +22,18 @@ def start(message: Message):
                           'using images and videos obtained from Sperm Chromatin Dispersion (SCD) Test.'
                           ' You just have to upload the images/videous to obtain the results of the'
                           ' test. AI is configured to images/videos obtained from 400x microscope'
-                          ' magnification. \n\nЭтот бот способен высчитывать индекс фрагментации ДНК'
+                          ' magnification. \n\n\n\nЭтот бот способен высчитывать индекс фрагментации ДНК'
                           ' сперматозоидов, используя фотографии или видеоматериалы, полученные с помощью'
                           ' теста на дисперсию хроматина сперматозоидов (SCD test). Для получения результата'
                           ' вам достаточно загрузить фотографии/видеоматериалы полученных препаратов. ИИ бота '
                           'предназначен только для анализа изображений/видеоматериалов, полученных с микроскопа '
-                          'с увеличением х400.')
+                          'с увеличением х400.'
+                          '\n\n\n\nКонтакты для связи:'
+                          '\n\nMagauiya Alikhan - orda.ezhenid@gmail.com '
+                          '\n\nZhumadil Kh.'
+                          '\n\nSarsen Sherkhan - sherkhan.sarsen@gmail.com'
+                          '\n\nDarbayev Nurdaulet - darbayevn@gmail.com'
+                     )
 
 
 @bot.message_handler(content_types=['photo'])
@@ -55,7 +61,7 @@ def download_photo(message):
         with open('output_images/ready.jpg', 'rb') as output_img:
             bot.send_photo(message.chat.id, output_img)
             bot.send_message(message.chat.id, output_text)
-            bot.send_message(message.chat.id, f'Percent fragmentation {round(percent*100, 2)}%')
+            bot.send_message(message.chat.id, f'Percent fragmentation {round(percent * 100, 2)}%')
 
         logger.info('Prediction completed')
     except Exception as e:
