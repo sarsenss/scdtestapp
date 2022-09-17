@@ -4,7 +4,9 @@ from telebot.types import Message
 from config import token
 import logging
 from packed_image_editor import make_baw
+import datetime
 
+now_time = datetime.datetime.now().date()
 FORMAT = '%(asctime)s %(message)s'
 logging.basicConfig(format=FORMAT)
 logger = logging.getLogger('tcpserver')
