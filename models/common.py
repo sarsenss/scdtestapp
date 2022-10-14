@@ -720,7 +720,7 @@ class Detections:
         self.display(pprint=True)  # print results
         print(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {tuple(self.s)}' % self.t)
 
-    def save(self, labels=True, save_dir='output_images'):
+    def save(self, save_dir, labels=True):
         self.display(save=True, labels=labels, save_dir=Path(save_dir))  # save results
 
     def __len__(self):

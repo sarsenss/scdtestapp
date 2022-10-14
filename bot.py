@@ -4,6 +4,7 @@ from telebot.types import Message
 from config import token
 import logging
 from packed_image_editor import make_baw
+from tools import predict
 
 FORMAT = '%(asctime)s %(message)s'
 logging.basicConfig(format=FORMAT)
@@ -53,7 +54,7 @@ def download_photo(message):
         logger.info('Photo read')
 
         bot.reply_to(message, "Wait please, uploading ...")
-        make_baw(input_path=src, output_path='baw_images')
+        make_baw(input_path=src)
         output_text, percent = predict(input_model=model, img_path='baw_images/ready.jpeg')
 
         logger.info('Photo converted to BaW')
@@ -67,18 +68,6 @@ def download_photo(message):
     except Exception as e:
         logger.error('Appeared error: %s', str(e))
         bot.reply_to(message, 'Appeared errors, try another photo, please')
-
-
-def predict(input_model, img_path):
-    logger.info('Started detection ...')
-    result = input_model(img_path)
-    logger.info('Detection completed')
-    text, percent = result.process_text()
-    logger.info('Detection text %s', text)
-    result.save()
-    logger.info('Output photo saved')
-
-    return text, percent
 
 
 bot.polling()
