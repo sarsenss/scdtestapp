@@ -5,7 +5,7 @@ from config import token
 import logging
 from packed_image_editor import make_baw
 import datetime
-from tools import  predict
+from tools import predict
 
 now_time = datetime.datetime.now().date()
 FORMAT = '%(asctime)s %(message)s'
