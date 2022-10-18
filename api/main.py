@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from packed_image_editor import make_baw
 import torch
 from tools import predict
+from api.models import ImageData
 
 model = torch.hub.load('./', 'custom', path='./model/best.pt', source='local', force_reload=True)
 app = FastAPI(debug=True, description='API convert photo by model')
@@ -18,7 +19,15 @@ percnt = 0.0
 
 @app.get('/status', response_class=JSONResponse)
 async def get_status():
-    return [{'text': out_text + '\nPercent fragmentation ' + str(round(percnt * 100, 2)) + '%'}]
+    spls = out_text.split(' ')
+    data = {
+        'percent': str(round(percnt * 100, 2)) + '%',
+        'fragments': int(spls[3]),
+        'normals': int(spls[5]),
+        'text': out_text
+    }
+    img_data = ImageData(**data)
+    return JSONResponse(img_data.dict())
 
 
 @app.post('/use_model')
