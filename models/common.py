@@ -705,15 +705,16 @@ class Detections:
                     LOGGER.info(f"Saved {self.n} image{'s' * (self.n > 1)} to {colorstr('bold', save_dir)}")
             return crops
 
-    def process_text(self):
+    def process_text(self, data=False):
         self.display()
         total_number = float(self.info_dict['fragmented'] + self.info_dict['normal'] + self.info_dict['fragmented_degraded'])
         percent = float(self.info_dict['fragmented'] + self.info_dict['fragmented_degraded']) / total_number
-
-        # logger.info('total number % s, type %s\nfragmented % s, type % s, degraded % s, type % s',
-        #             total_number, type(total_number), self.info_dict['fragmented'],
-        #             type(self.info_dict['fragmented']),
-        #             self.info_dict['fragmented_degraded'], type(self.info_dict['fragmented_degraded']))
+        if data:
+            res = dict(
+                data=[float(self.info_dict['fragmented']), float(self.info_dict['normal']), float(self.info_dict['fragmented_degraded'])],
+                percent=percent
+            )
+            return self.text, res
         return self.text, percent
 
     def print(self):
