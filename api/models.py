@@ -6,3 +6,4 @@ class ImageData(BaseModel):
     fragments: int
     fragmented_degradeds: int
     normals: int
+    img_bytes: str

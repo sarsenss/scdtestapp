@@ -1,11 +1,14 @@
 import logging
 from os import getcwd
 from fastapi import FastAPI, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import JSONResponse
 from packed_image_editor import make_baw
 import torch
 from tools import predict
 from api.models import ImageData
+from PIL import Image
+from io import BytesIO
+import base64
 
 model = torch.hub.load('./', 'custom', path='./model/best.pt', source='local', force_reload=True)
 app = FastAPI(debug=True, description='API convert photo by model')
@@ -13,23 +16,8 @@ FORMAT = '%(asctime)s %(message)s'
 logging.basicConfig(format=FORMAT)
 logger = logging.getLogger('tcpserver')
 
-out_data = dict(data=[0.0, 0.0, 0.0], percent=0.0)
-percnt = 0.0
 
-
-@app.get('/status', response_class=JSONResponse)
-async def get_status():
-    data = {
-        'percent': str(round(out_data['percent'] * 100, 2)) + '%',
-        'fragments': out_data['data'][0],
-        'fragmented_degradeds': out_data['data'][2],
-        'normals': out_data['data'][1],
-    }
-    img_data = ImageData(**data)
-    return JSONResponse(img_data.dict())
-
-
-@app.post('/use_model')
+@app.post('/use_model', response_class=JSONResponse)
 async def use_model(file: UploadFile):
     global out_data
     delete()
@@ -53,7 +41,19 @@ async def use_model(file: UploadFile):
         logger.error(e)
         return JSONResponse(status_code=422, content='Occurred error, try another file')
 
-    return FileResponse(path=f"{getcwd()}/api/output_photo/ready.jpg", status_code=200)
+    image = Image.open(f"{getcwd()}/api/output_photo/ready.jpg")
+    img_file = BytesIO()
+    image.save(img_file, format='JPEG')
+    img_bytes = base64.b64encode(img_file.getvalue())
+
+    data = {
+        'percent': str(round(out_data['percent'] * 100, 2)) + '%',
+        'fragments': out_data['data'][0],
+        'fragmented_degradeds': out_data['data'][2],
+        'normals': out_data['data'][1],
+        'img_bytes': img_bytes,
+    }
+    return JSONResponse(ImageData(**data).dict())
 
 
 def delete():
